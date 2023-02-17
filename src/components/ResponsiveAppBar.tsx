@@ -79,7 +79,19 @@ function ResponsiveAppBar() {
                         >
                             {pages.map((page) => (
                                 <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <Typography textAlign="center">{page}</Typography>
+                                    <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                             style={({isActive}) =>
+                                                 isActive ? {
+                                                     color: 'inherit',
+                                                     textDecoration: "none",
+                                                     opacity: ".5"
+                                                 } : {
+                                                     color: 'inherit',
+                                                     textDecoration: "none",
+                                                 }
+                                             }>
+                                        {page}
+                                    </NavLink>
                                 </MenuItem>
                             ))}
                         </Menu>
@@ -105,12 +117,13 @@ function ResponsiveAppBar() {
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
-                            <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()} style={({isActive}) =>
-                                isActive ? {
-                                    textDecoration: "none",
-                                    opacity: ".5"
-                                } : {textDecoration: "none",}
-                            }>
+                            <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                     style={({isActive}) =>
+                                         isActive ? {
+                                             textDecoration: "none",
+                                             opacity: ".5"
+                                         } : {textDecoration: "none",}
+                                     }>
                                 <Button
                                     key={page}
                                     onClick={handleCloseNavMenu}
