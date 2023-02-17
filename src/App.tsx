@@ -1,26 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
+// import logo from './logo.svg';
 import './App.css';
+import { CssBaseline, } from '@mui/material';
+import Home from './pages/Home';
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import ReactDOM from 'react-dom/client';
+import Layout from './pages/Layout';
+import Contact from './pages/Contact';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+export default function App() {
+    return (
+        <>
+            <CssBaseline/>
+            <BrowserRouter>
+                <Routes>
+                    <Route path="/" element={<Layout/>}>
+                        <Route index element={<Home/>}/>
+                        <Route path="/contact" element={<Contact/>}/>
+                    </Route>
+                </Routes>
+            </BrowserRouter>
+        </>
+    );
 }
 
-export default App;
+// @ts-ignore
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App/>);
+
+
