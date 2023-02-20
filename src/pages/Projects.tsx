@@ -1,19 +1,18 @@
 import React from 'react';
-import { Box, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 
-function Projects() {
+export default function Projects() {
     return (
-        <Box
-            display="inline"
-        >
-            <Typography variant="h1">
+        <>
+            <Typography variant="h1" display={{xs: 'none', md: 'inherit'}}>
+                Anthony Brignano
+            </Typography>
+            <Typography variant="h2" display={{md: 'none'}}>
                 Anthony Brignano
             </Typography>
             <Typography variant="subtitle1">
                 Staff Software Engineer
             </Typography>
-        </Box>
+        </>
     );
 }
-
-export default Projects;

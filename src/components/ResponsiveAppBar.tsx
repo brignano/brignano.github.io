@@ -9,14 +9,15 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
-import Hiking from '@mui/icons-material/Hiking';
 import { NavLink } from 'react-router-dom';
+import { useTheme } from '@mui/material';
 
-const pages = ['Home', 'Contact'];
+const pages = ['home', 'contact'];
 
 // const pages = ['Home', 'Projects', 'Resume', 'Contact'];
 
-function ResponsiveAppBar() {
+export default function ResponsiveAppBar() {
+    const theme = useTheme();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -29,7 +30,6 @@ function ResponsiveAppBar() {
         <AppBar position="static">
             <Container maxWidth="xl">
                 <Toolbar disableGutters variant="dense">
-                    <Hiking sx={{display: {xs: 'none', md: 'flex'}, mr: 1}}/>
                     <Typography
                         variant="h6"
                         noWrap
@@ -39,7 +39,7 @@ function ResponsiveAppBar() {
                             mr: 2,
                             display: {xs: 'none', md: 'flex'},
                             fontFamily: 'monospace',
-                            fontWeight: 700,
+                            fontWeight: theme.typography.fontWeightBold,
                             letterSpacing: '.3rem',
                             color: 'inherit',
                             textDecoration: 'none',
@@ -84,19 +84,23 @@ function ResponsiveAppBar() {
                                                  isActive ? {
                                                      color: 'inherit',
                                                      textDecoration: "none",
-                                                     opacity: ".5"
                                                  } : {
                                                      color: 'inherit',
                                                      textDecoration: "none",
+                                                     opacity: ".5"
+
                                                  }
                                              }>
-                                        {page}
+                                        <Typography
+                                            variant="button"
+                                        >
+                                            {page}
+                                        </Typography>
                                     </NavLink>
                                 </MenuItem>
                             ))}
                         </Menu>
                     </Box>
-                    <Hiking sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
                     <Typography
                         variant="h5"
                         noWrap
@@ -113,19 +117,20 @@ function ResponsiveAppBar() {
                             textDecoration: 'none',
                         }}
                     >
-                        ANT
+                        @brignano
                     </Typography>
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                         {pages.map((page) => (
-                            <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                            <NavLink key={page} to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
                                      style={({isActive}) =>
                                          isActive ? {
                                              textDecoration: "none",
+                                         } : {
+                                             textDecoration: "none",
                                              opacity: ".5"
-                                         } : {textDecoration: "none",}
+                                         }
                                      }>
                                 <Button
-                                    key={page}
                                     onClick={handleCloseNavMenu}
                                     sx={{my: 2, color: 'white', display: 'block'}}
                                 >
@@ -139,5 +144,3 @@ function ResponsiveAppBar() {
         </AppBar>
     );
 }
-
-export default ResponsiveAppBar;

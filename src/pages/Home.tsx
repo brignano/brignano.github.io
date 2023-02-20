@@ -1,25 +1,44 @@
 import React from 'react';
-import { Typography } from '@mui/material';
-import { createTheme, responsiveFontSizes, ThemeProvider } from '@mui/material/styles';
+import { Typography, useTheme } from '@mui/material';
+import styled, { keyframes } from 'styled-components';
+import { fadeIn, merge, zoomInDown } from 'react-animations';
 
-function Home() {
-    let theme = createTheme();
-    theme = responsiveFontSizes(theme);
+const headerAnimation = keyframes`${merge(fadeIn, zoomInDown)}`;
+const subHeaderAnimation = keyframes`${merge(fadeIn, zoomInDown)}`;
+
+const AnimatedHeader = styled.div`
+  animation: 1s ${headerAnimation};
+  font-weight: 800;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(.55, .055, .675, .19);
+`;
+
+const AnimatedSubHeader = styled.div`
+  0% {
+    opacity: 0;
+    transform: scale3d(.1, .1, .1) translate3d(0, -1000px, 0)
+  }
+
+  60% {
+    opacity: 1;
+    transform: scale3d(.475, .475, .475) translate3d(0, 60px, 0);
+  }
+
+  animation: 1s ${subHeaderAnimation} 0.3s;
+  animation-fill-mode: both;
+  animation-timing-function: cubic-bezier(.55, .055, .675, .19);
+`;
+
+export default function Home() {
+    const theme = useTheme();
     return (
         <>
-            <ThemeProvider theme={theme}>
-                <Typography variant="h1" display={{xs: 'none', md: 'inherit'}}>
-                    Anthony Brignano
-                </Typography>
-                <Typography variant="h2" display={{md: 'none'}}>
-                    Anthony Brignano
-                </Typography>
-                <Typography variant="subtitle1">
-                    Staff Software Engineer
-                </Typography>
-            </ThemeProvider>
+            <Typography variant="h2" color={theme.palette.primary.dark} gutterBottom>
+                <AnimatedHeader>Anthony Brignano</AnimatedHeader>
+            </Typography>
+            <Typography variant="button">
+                <AnimatedSubHeader>Staff Software Engineer</AnimatedSubHeader>
+            </Typography>
         </>
     );
 }
-
-export default Home;
