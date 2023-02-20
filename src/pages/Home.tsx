@@ -1,5 +1,5 @@
 import React from 'react';
-import { Typography, useTheme } from '@mui/material';
+import { Box, Typography, useTheme } from '@mui/material';
 import styled, { keyframes } from 'styled-components';
 import { fadeIn, merge, zoomInDown } from 'react-animations';
 
@@ -32,13 +32,19 @@ const AnimatedSubHeader = styled.div`
 export default function Home() {
     const theme = useTheme();
     return (
-        <>
+        <Box
+            display="inherit"
+            flexDirection="column"
+            minHeight="100svh"
+            alignItems="center"
+            justifyContent="center"
+        >
             <Typography variant="h2" color={theme.palette.primary.dark} gutterBottom>
                 <AnimatedHeader>Anthony Brignano</AnimatedHeader>
             </Typography>
             <Typography variant="button">
                 <AnimatedSubHeader>Staff Software Engineer</AnimatedSubHeader>
             </Typography>
-        </>
+        </Box>
     );
 }

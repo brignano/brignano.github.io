@@ -10,14 +10,15 @@ import Container from '@mui/material/Container';
 import Button from '@mui/material/Button';
 import MenuItem from '@mui/material/MenuItem';
 import { NavLink } from 'react-router-dom';
-import { useTheme } from '@mui/material';
+import { Slide, useScrollTrigger, useTheme } from '@mui/material';
 
 const pages = ['home', 'contact'];
 
-// const pages = ['Home', 'Projects', 'Resume', 'Contact'];
+// const pages = ['home', 'projects', 'resume', 'contact'];
 
 export default function ResponsiveAppBar() {
     const theme = useTheme();
+    const trigger = useScrollTrigger();
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
@@ -27,120 +28,122 @@ export default function ResponsiveAppBar() {
     };
 
     return (
-        <AppBar position="static">
-            <Container maxWidth="xl">
-                <Toolbar disableGutters variant="dense">
-                    <Typography
-                        variant="h6"
-                        noWrap
-                        component="a"
-                        href="/"
-                        sx={{
-                            mr: 2,
-                            display: {xs: 'none', md: 'flex'},
-                            fontFamily: 'monospace',
-                            fontWeight: theme.typography.fontWeightBold,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        ANT
-                    </Typography>
-
-                    <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
-                        <IconButton
-                            size="large"
-                            aria-label="account of current user"
-                            aria-controls="menu-appbar"
-                            aria-haspopup="true"
-                            onClick={handleOpenNavMenu}
-                            color="inherit"
-                        >
-                            <MenuIcon/>
-                        </IconButton>
-                        <Menu
-                            id="menu-appbar"
-                            anchorEl={anchorElNav}
-                            anchorOrigin={{
-                                vertical: 'bottom',
-                                horizontal: 'left',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'left',
-                            }}
-                            open={Boolean(anchorElNav)}
-                            onClose={handleCloseNavMenu}
+        <Slide appear={false} direction="down" in={!trigger}>
+            <AppBar>
+                <Container maxWidth="xl">
+                    <Toolbar disableGutters variant="dense">
+                        <Typography
+                            variant="h6"
+                            noWrap
+                            component="a"
+                            href="/"
                             sx={{
-                                display: {xs: 'block', md: 'none'},
+                                mr: 2,
+                                display: {xs: 'none', md: 'flex'},
+                                fontFamily: 'monospace',
+                                fontWeight: theme.typography.fontWeightBold,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
                             }}
                         >
-                            {pages.map((page) => (
-                                <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                    <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
-                                             style={({isActive}) =>
-                                                 isActive ? {
-                                                     color: 'inherit',
-                                                     textDecoration: "none",
-                                                 } : {
-                                                     color: 'inherit',
-                                                     textDecoration: "none",
-                                                     opacity: ".5"
+                            ANT
+                        </Typography>
 
-                                                 }
-                                             }>
-                                        <Typography
-                                            variant="button"
-                                        >
-                                            {page}
-                                        </Typography>
-                                    </NavLink>
-                                </MenuItem>
+                        <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
+                            <IconButton
+                                size="large"
+                                aria-label="account of current user"
+                                aria-controls="menu-appbar"
+                                aria-haspopup="true"
+                                onClick={handleOpenNavMenu}
+                                color="inherit"
+                            >
+                                <MenuIcon/>
+                            </IconButton>
+                            <Menu
+                                id="menu-appbar"
+                                anchorEl={anchorElNav}
+                                anchorOrigin={{
+                                    vertical: 'bottom',
+                                    horizontal: 'left',
+                                }}
+                                keepMounted
+                                transformOrigin={{
+                                    vertical: 'top',
+                                    horizontal: 'left',
+                                }}
+                                open={Boolean(anchorElNav)}
+                                onClose={handleCloseNavMenu}
+                                sx={{
+                                    display: {xs: 'block', md: 'none'},
+                                }}
+                            >
+                                {pages.map((page) => (
+                                    <MenuItem key={page} onClick={handleCloseNavMenu}>
+                                        <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                                 style={({isActive}) =>
+                                                     isActive ? {
+                                                         color: 'inherit',
+                                                         textDecoration: "none",
+                                                     } : {
+                                                         color: 'inherit',
+                                                         textDecoration: "none",
+                                                         opacity: ".5"
+
+                                                     }
+                                                 }>
+                                            <Typography
+                                                variant="button"
+                                            >
+                                                {page}
+                                            </Typography>
+                                        </NavLink>
+                                    </MenuItem>
+                                ))}
+                            </Menu>
+                        </Box>
+                        <Typography
+                            variant="h5"
+                            noWrap
+                            component="a"
+                            href=""
+                            sx={{
+                                mr: 2,
+                                display: {xs: 'flex', md: 'none'},
+                                flexGrow: 1,
+                                fontFamily: 'monospace',
+                                fontWeight: 700,
+                                letterSpacing: '.3rem',
+                                color: 'inherit',
+                                textDecoration: 'none',
+                            }}
+                        >
+                            @brignano
+                        </Typography>
+                        <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
+                            {pages.map((page) => (
+                                <NavLink key={page} to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                         style={({isActive}) =>
+                                             isActive ? {
+                                                 textDecoration: "none",
+                                             } : {
+                                                 textDecoration: "none",
+                                                 opacity: ".5"
+                                             }
+                                         }>
+                                    <Button
+                                        onClick={handleCloseNavMenu}
+                                        sx={{my: 2, color: 'white', display: 'block'}}
+                                    >
+                                        {page}
+                                    </Button>
+                                </NavLink>
                             ))}
-                        </Menu>
-                    </Box>
-                    <Typography
-                        variant="h5"
-                        noWrap
-                        component="a"
-                        href=""
-                        sx={{
-                            mr: 2,
-                            display: {xs: 'flex', md: 'none'},
-                            flexGrow: 1,
-                            fontFamily: 'monospace',
-                            fontWeight: 700,
-                            letterSpacing: '.3rem',
-                            color: 'inherit',
-                            textDecoration: 'none',
-                        }}
-                    >
-                        @brignano
-                    </Typography>
-                    <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                        {pages.map((page) => (
-                            <NavLink key={page} to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
-                                     style={({isActive}) =>
-                                         isActive ? {
-                                             textDecoration: "none",
-                                         } : {
-                                             textDecoration: "none",
-                                             opacity: ".5"
-                                         }
-                                     }>
-                                <Button
-                                    onClick={handleCloseNavMenu}
-                                    sx={{my: 2, color: 'white', display: 'block'}}
-                                >
-                                    {page}
-                                </Button>
-                            </NavLink>
-                        ))}
-                    </Box>
-                </Toolbar>
-            </Container>
-        </AppBar>
+                        </Box>
+                    </Toolbar>
+                </Container>
+            </AppBar>
+        </Slide>
     );
 }

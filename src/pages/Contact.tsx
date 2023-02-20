@@ -1,9 +1,15 @@
 import React from 'react';
-import { Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 
 export default function Contact() {
     return (
-        <>
+        <Box
+            display="inherit"
+            flexDirection="column"
+            minHeight="100svh"
+            alignItems="center"
+            justifyContent="center"
+        >
             <Typography variant="h1" display={{xs: 'none', md: 'inherit'}}>
                 Contact Me
             </Typography>
@@ -13,6 +19,6 @@ export default function Contact() {
             <Typography variant="subtitle1">
                 to be continued...
             </Typography>
-        </>
+        </Box>
     );
 }

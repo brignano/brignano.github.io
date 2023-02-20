@@ -1,6 +1,8 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import { Box } from '@mui/material';
+import ResponsiveAppBar from '../components/ResponsiveAppBar';
+import Contact from './Contact';
 
 export default function Layout() {
     return (
@@ -9,7 +11,7 @@ export default function Layout() {
             flexDirection="column"
             flexGrow="1"
         >
-            {/* <ResponsiveAppBar/> */}
+            <ResponsiveAppBar/>
             <Box
                 display="inherit"
                 flexDirection="column"
@@ -18,6 +20,7 @@ export default function Layout() {
                 justifyContent="center"
             >
                 <Outlet/>
+                <Contact/>
             </Box>
         </Box>
     );
