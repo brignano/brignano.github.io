@@ -81,7 +81,7 @@ export default function ResponsiveAppBar() {
                             >
                                 {pages.map((page) => (
                                     <MenuItem key={page} onClick={handleCloseNavMenu}>
-                                        <NavLink to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                        <NavLink to={page === 'home' ? '' : page}
                                                  style={({isActive}) =>
                                                      isActive ? {
                                                          color: 'inherit',
@@ -113,7 +113,7 @@ export default function ResponsiveAppBar() {
                                 display: {xs: 'flex', md: 'none'},
                                 flexGrow: 1,
                                 fontFamily: 'monospace',
-                                fontWeight: 700,
+                                fontWeight: theme.typography.fontWeightBold,
                                 letterSpacing: '.3rem',
                                 color: 'inherit',
                                 textDecoration: 'none',
@@ -123,7 +123,7 @@ export default function ResponsiveAppBar() {
                         </Typography>
                         <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
                             {pages.map((page) => (
-                                <NavLink key={page} to={page.toLowerCase() === 'home' ? '' : page.toLowerCase()}
+                                <NavLink key={page} to={page === 'home' ? '' : page}
                                          style={({isActive}) =>
                                              isActive ? {
                                                  textDecoration: "none",

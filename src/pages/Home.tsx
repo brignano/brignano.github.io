@@ -38,6 +38,7 @@ export default function Home() {
             minHeight="100svh"
             alignItems="center"
             justifyContent="center"
+            id="home"
         >
             <Typography variant="h2" color={theme.palette.primary.dark} gutterBottom>
                 <AnimatedHeader>Anthony Brignano</AnimatedHeader>

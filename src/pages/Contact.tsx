@@ -9,6 +9,7 @@ export default function Contact() {
             minHeight="100svh"
             alignItems="center"
             justifyContent="center"
+            id="contact"
         >
             <Typography variant="h1" display={{xs: 'none', md: 'inherit'}}>
                 Contact Me
