@@ -8,7 +8,6 @@ const subHeaderAnimation = keyframes`${merge(fadeIn, zoomInDown)}`;
 
 const AnimatedHeader = styled.div`
   animation: 1s ${headerAnimation};
-  font-weight: 800;
   animation-fill-mode: both;
   animation-timing-function: cubic-bezier(.55, .055, .675, .19);
 `;
@@ -40,7 +39,7 @@ export default function Home() {
             justifyContent="center"
             id="home"
         >
-            <Typography variant="h2" color={theme.palette.primary.dark} gutterBottom>
+            <Typography variant="h2" color={theme.palette.primary.main} gutterBottom>
                 <AnimatedHeader>Anthony Brignano</AnimatedHeader>
             </Typography>
             <Typography variant="button">
