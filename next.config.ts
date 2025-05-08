@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import withVercelToolbar from "@vercel/toolbar/plugins/next";
 
 const nextConfig: NextConfig = {
   /**
@@ -6,7 +7,7 @@ const nextConfig: NextConfig = {
    *
    * @see https://nextjs.org/docs/app/building-your-application/deploying/static-exports
    */
-  output: "export",
+  // output: "export",
 
   /**
    * Set base path. This is usually the slug of your repository.
@@ -24,6 +25,7 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  allowedDevOrigins: ["https://localhost:3000/", "127.0.0.1:3000"],
 };
 
-export default nextConfig;
+export default withVercelToolbar()(nextConfig);

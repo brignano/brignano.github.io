@@ -6,6 +6,7 @@ import Footer from "@/components/footer";
 import 'aos/dist/aos.css'; // You can also use <link> for styles
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/react";
+import { VercelToolbar } from "@vercel/toolbar/next";
 
 const inconsolata = Inconsolata({
   variable: "--font-inconsolata-mono",
@@ -61,6 +62,7 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const shouldInjectToolbar = process.env.NODE_ENV === "development";
   return (
     <html lang="en">
       <body
@@ -68,6 +70,7 @@ export default function RootLayout({
       >
         <Header />
         {children}
+        {shouldInjectToolbar && <VercelToolbar />}
         <Footer />
         <SpeedInsights />
         <Analytics />
