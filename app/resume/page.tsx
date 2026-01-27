@@ -1,9 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import yaml from "js-yaml";
 import type { ResumeData } from "@/types/resume";
 import BreadcrumbSchema from "@/components/breadcrumb-schema";
 import { event } from "@/lib/gtag";
+
+// `ResumePDF` and `@react-pdf/renderer` are imported dynamically in the
+// download handler to avoid bundling or SSR issues.
 
 const RESUME_BREADCRUMBS = [
   {
@@ -21,10 +25,61 @@ export default function Home() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareSupported, setShareSupported] = useState(false);
+  const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
+
+  const handleDownloadPDF = async () => {
+    if (!resumeData || isGeneratingPDF) return;
+
+    setIsGeneratingPDF(true);
+    try {
+      // Dynamically import both the PDF renderer and the ResumePDF component
+      // in the browser and generate the PDF. Importing here prevents server
+      // or bundler-time errors caused by `@react-pdf/renderer`.
+      const [{ default: ResumePDF }, { pdf }] = await Promise.all([
+        import("@/components/resume-pdf"),
+        import("@react-pdf/renderer"),
+      ]);
+
+      const blob = await pdf(<ResumePDF data={resumeData} />).toBlob();
+
+      // Create download link
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `${resumeData.personalInfo.name.replace(/\s+/g, "_")}_Resume.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+
+      // Track event
+      event("pdf_downloaded", {
+        cta: "resume_download",
+        origin: "resume",
+        transport_type: "beacon",
+      });
+    } catch (err) {
+      console.error("Failed to generate PDF", err);
+      alert("Failed to generate PDF. Please try again.");
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
 
   useEffect(() => {
     setShareSupported(typeof navigator !== "undefined" && !!navigator.share);
-  }, []);
+
+    // Listen for download event from header
+    const handleDownloadEvent = () => {
+      handleDownloadPDF();
+    };
+
+    window.addEventListener("download-resume-pdf", handleDownloadEvent);
+    return () => {
+      window.removeEventListener("download-resume-pdf", handleDownloadEvent);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [resumeData, isGeneratingPDF]);
 
   const handleShare = async () => {
     const url =
@@ -55,16 +110,17 @@ export default function Home() {
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        // Get the endpoint from environment variable or use default
+        // Get the endpoint from environment variable or use default (now YAML)
         const endpoint =
-          process.env.NEXT_PUBLIC_RESUME_ENDPOINT || "/resume.json";
+          process.env.NEXT_PUBLIC_RESUME_ENDPOINT || "/resume.yml";
         const response = await fetch(endpoint);
 
         if (!response.ok) {
           throw new Error(`Failed to fetch resume: ${response.statusText}`);
         }
 
-        const data = await response.json();
+        const yamlText = await response.text();
+        const data = yaml.load(yamlText) as ResumeData;
         setResumeData(data);
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to load resume");
@@ -126,7 +182,7 @@ export default function Home() {
         data-aos="fade-down"
         data-aos-duration={500}
         data-aos-once={true}
-        className="mb-16 print-no-break print-no-gap"
+        className="mb-16"
       >
         <h1 className="font-silkscreen-mono font-semibold tracking-tight text-3xl sm:text-5xl mb-4 lg:leading-[3.7rem] leading-tight">
           {personalInfo.name}
@@ -148,31 +204,13 @@ export default function Home() {
         </div>
         {/* Social Media Links */}
         <div className="flex flex-wrap gap-4 mb-8">
-          {/* Website button - show in print only */}
-          {personalInfo.website && (
-            <a
-              href={personalInfo.website}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="hidden print:inline-flex items-center px-4 py-2 border-2 dark:border-zinc-700 border-zinc-300 dark:hover:border-zinc-500 hover:border-zinc-400 font-semibold rounded-lg transition-all duration-200"
-              onClick={() => {
-                event("website_clicked", {
-                  cta: "resume_website",
-                  origin: "resume",
-                  transport_type: "beacon",
-                });
-              }}
-            >
-              Website
-            </a>
-          )}
-          {/* LinkedIn and GitHub - show in browser only */}
+          {/* LinkedIn and GitHub */}
           {personalInfo.linkedin && (
             <a
               href={personalInfo.linkedin}
               target="_blank"
               rel="noopener noreferrer"
-              className="print:hidden inline-flex items-center px-4 py-2 border-2 dark:border-zinc-700 border-zinc-300 dark:hover:border-zinc-500 hover:border-zinc-400 font-semibold rounded-lg transition-all duration-200"
+              className="inline-flex items-center px-4 py-2 border-2 dark:border-zinc-700 border-zinc-300 dark:hover:border-zinc-500 hover:border-zinc-400 font-semibold rounded-lg transition-all duration-200"
             >
               LinkedIn
             </a>
@@ -182,40 +220,13 @@ export default function Home() {
               href={personalInfo.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="print:hidden inline-flex items-center px-4 py-2 border-2 dark:border-zinc-700 border-zinc-300 dark:hover:border-zinc-500 hover:border-zinc-400 font-semibold rounded-lg transition-all duration-200"
+              className="inline-flex items-center px-4 py-2 border-2 dark:border-zinc-700 border-zinc-300 dark:hover:border-zinc-500 hover:border-zinc-400 font-semibold rounded-lg transition-all duration-200"
             >
               GitHub
             </a>
           )}
-          {/* Share button moved to header for better UX */}
         </div>
-        {/* single share button removed from here; added next to social links above */}
       </section>
-
-      {/* Social Media Links for print only (horizontal list) */}
-      {(personalInfo.website ||
-        personalInfo.linkedin ||
-        personalInfo.github) && (
-        <section className="mb-16 hidden print:block print-no-top">
-          <ul className="flex flex-wrap justify-start gap-6 list-none p-0 m-0 print:block print-link-row">
-            {personalInfo.website && (
-              <li>
-                <span>Website: {personalInfo.website}</span>
-              </li>
-            )}
-            {personalInfo.linkedin && (
-              <li>
-                <span>LinkedIn: {personalInfo.linkedin}</span>
-              </li>
-            )}
-            {personalInfo.github && (
-              <li>
-                <span>GitHub: {personalInfo.github}</span>
-              </li>
-            )}
-          </ul>
-        </section>
-      )}
 
       {/* Summary Section */}
       <section
@@ -244,7 +255,7 @@ export default function Home() {
             {experience.map((job, index) => (
               <div
                 key={index}
-                className="dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg print:no-border-bg"
+                className="dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg"
               >
                 <div className="flex justify-between items-start mb-3">
                   <div>
@@ -259,15 +270,15 @@ export default function Home() {
                     )}
                   </div>
                   <time className="text-sm text-zinc-600 dark:text-zinc-400 tracking-widest uppercase whitespace-nowrap">
-                    {job.startDate.toUpperCase()} -{" "}
+                    {String(job.startDate).toUpperCase()} -{" "}
                     <span
                       className={
-                        job.endDate.toLowerCase() === "present"
+                        String(job.endDate).toLowerCase() === "present"
                           ? "text-primary-color"
                           : ""
                       }
                     >
-                      {job.endDate.toUpperCase()}
+                      {String(job.endDate).toUpperCase()}
                     </span>
                   </time>
                 </div>
@@ -314,7 +325,7 @@ export default function Home() {
             {education.map((edu, index) => (
               <div
                 key={index}
-                className="dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg print:no-border-bg"
+                className="dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg"
               >
                 <h3 className="text-xl font-semibold">{edu.degree}</h3>
                 {edu.field && (
@@ -360,19 +371,12 @@ export default function Home() {
         >
           <h2 className="text-3xl mb-8 font-bold tracking-tight">Skills</h2>
           <div
-            className="grid md:grid-cols-2 grid-cols-1 gap-6 print-skills-grid"
-            style={
-              {
-                ["--print-cols" as any]: String(
-                  Math.max(1, Math.min(4, skills.length))
-                ),
-              } as React.CSSProperties
-            }
+            className="grid md:grid-cols-2 grid-cols-1 gap-6"
           >
             {skills.map((skillGroup, index) => (
               <div
                 key={index}
-                className="skill-group dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg print:no-border-bg"
+                className="skill-group dark:bg-primary-bg bg-secondary-bg border dark:border-zinc-800 border-zinc-200 p-6 rounded-lg"
               >
                 <h3 className="text-lg font-semibold mb-3">
                   {skillGroup.category}
@@ -402,7 +406,7 @@ export default function Home() {
           data-aos-once={true}
         >
           <h2 className="text-3xl mb-8 font-bold tracking-tight">Projects</h2>
-          <div className="grid lg:grid-cols-2 grid-cols-1 gap-6 print-projects-grid">
+          <div className="grid lg:grid-cols-2 grid-cols-1 gap-6">
             {projects.map((project, index) => (
               <div
                 key={index}

@@ -13,7 +13,7 @@ A personal website and portfolio built with Next.js 16, React 19, and TailwindCS
 - **Vercel Analytics** and **Speed Insights** integration
 - **GitHub Calendar** visualization
 - **AOS** (Animate On Scroll) animations
-- **Resume Integration** at `/resume` path (now served directly from the application)
+- **Resume Integration** at `/resume` path with YAML-based data and PDF download functionality
 - **Coding Activity** page with WakaTime tiles and a GitHub contribution calendar
 - **Scroll-to-top** button for long pages
 
@@ -61,7 +61,16 @@ If you prefer to run locally without a Dev Container:
 
 ### Resume Content
 
-The resume is now integrated directly into the application and accessible at `/resume`. It features a dedicated layout with theme toggling, PDF download functionality, and comprehensive professional experience.
+The resume is integrated directly into the application and accessible at `/resume`. Resume data is stored in YAML format (`public/resume.yml`) for easy editing and maintenance.
+
+**Features:**
+- PDF download functionality using `@react-pdf/renderer`
+- Client-side PDF generation from YAML data
+- Theme toggling support
+- Responsive design
+- Clean, professional layout
+
+The PDF generation is handled entirely on the client-side, allowing the application to maintain its static export configuration while providing dynamic PDF download capabilities.
 
 ### Available Scripts
 
@@ -239,7 +248,7 @@ Optional:
 ├── components/             # React components (reusable UI)
 ├── public/                 # Static assets
 │   ├── robots.txt          # Robots rules
-│   └── resume.json         # Resume data
+│   └── resume.yml          # Resume data (YAML format)
 ├── lib/                    # Site constants, analytics helpers
 ├── types/                  # TypeScript types
 ├── eslint.config.mjs       # ESLint configuration

@@ -55,7 +55,8 @@ export default function Header() {
   };
 
   const handleDownloadPDF = () => {
-    window.print();
+    // Dispatch custom event that resume page will listen to
+    window.dispatchEvent(new CustomEvent("download-resume-pdf"));
   };
 
   const handleShare = async () => {
